@@ -14,6 +14,7 @@ async function loadDestinations() {
             card.innerHTML = `
                 <div class="card-image">
                     <img src="../img/${destination.image}" alt="${destination.destination}">
+                    <span class="heart" data-id="${destination.id}">♥</span>
                 </div>
                 <div class="card-content">
                     <h3>${destination.destination}</h3>
@@ -22,6 +23,14 @@ async function loadDestinations() {
                 </div>
             `;
             
+            const heart = card.querySelector('.heart');
+            heart.classList.toggle('favorite', isFavorite(destination.id));
+            
+            heart.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite(destination.id);
+                heart.classList.toggle('favorite', isFavorite(destination.id));
+            });
             
             card.addEventListener('click', () => {
                 window.location.href = `destination.html?id=${destination.id}`;
@@ -32,6 +41,30 @@ async function loadDestinations() {
     } catch (error) {
         console.error('Fejl ved hentning af destinationer:', error);
     }
+}
+
+function loadFavorites() {
+    const favorites = localStorage.getItem('favorites');
+    return favorites ? JSON.parse(favorites) : [];
+}
+
+function saveFavorites(favorites) {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+function isFavorite(id) {
+    const favorites = loadFavorites();
+    return favorites.includes(id);
+}
+
+function toggleFavorite(id) {
+    let favorites = loadFavorites();
+    if (favorites.includes(id)) {
+        favorites = favorites.filter(fav => fav !== id);
+    } else {
+        favorites.push(id);
+    }
+    saveFavorites(favorites);
 }
 
 

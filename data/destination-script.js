@@ -3,6 +3,31 @@ function getIdFromUrl() {
     return params.get('id');
 }
 
+function loadFavorites() {
+    const favorites = localStorage.getItem('favorites');
+    return favorites ? JSON.parse(favorites) : [];
+}
+
+function saveFavorites(favorites) {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+function isFavorite(id) {
+    const favorites = loadFavorites();
+    return favorites.includes(parseInt(id));
+}
+
+function toggleFavorite(id) {
+    let favorites = loadFavorites();
+    const numId = parseInt(id);
+    if (favorites.includes(numId)) {
+        favorites = favorites.filter(fav => fav !== numId);
+    } else {
+        favorites.push(numId);
+    }
+    saveFavorites(favorites);
+}
+
 
 async function loadDestinationDetails() {
     const id = getIdFromUrl();
@@ -27,6 +52,7 @@ async function loadDestinationDetails() {
         container.innerHTML = `
             <div class="detail-image">
                 <img src="../img/${destination.image}" alt="${destination.destination}">
+                <span class="heart" data-id="${destination.id}">♥</span>
             </div>
             <div class="detail-content">
                 <h2>${destination.destination}</h2>
@@ -46,6 +72,14 @@ async function loadDestinationDetails() {
                 </div>
             </div>
         `;
+        
+        const heart = container.querySelector('.heart');
+        heart.classList.toggle('favorite', isFavorite(destination.id));
+        
+        heart.addEventListener('click', () => {
+            toggleFavorite(destination.id);
+            heart.classList.toggle('favorite', isFavorite(destination.id));
+        });
     } catch (error) {
         console.error('Fejl ved hentning af destination:', error);
         document.getElementById('destinationContainer').innerHTML = `<p>Der skete en fejl ved indlæsning af destinationen.</p>`;

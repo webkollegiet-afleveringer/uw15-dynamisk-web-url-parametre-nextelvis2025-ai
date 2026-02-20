@@ -126,6 +126,7 @@ header h1 {
     min-height: 500px;
     overflow: hidden;
     background-color: #f0f0f0;
+    position: relative;
 }
 
 .detail-image img {
@@ -193,8 +194,23 @@ header h1 {
     padding: 12px;
 }
 
+.heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.3s ease;
+}
 
-@media (max-width: 768px) {
+.heart.favorite {
+    color: red;
+}
+
+.card-image {
+    position: relative;
+}
     .destinations-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 15px;
@@ -224,4 +240,4 @@ header h1 {
     header h1 {
         font-size: 1.75rem;
     }
-}
+
